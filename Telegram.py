@@ -76,8 +76,9 @@ try:
             # If there is no file we shouldn't continue
             if not y[0].file:
                 continue
-
-            info = str(current) + "of" + str(totalsize) + "\n\rMESSAGE_ID: " + str(msgId) + "\n\r" + y[0].file.name
+            # Photo might not have filename
+            filename = y[0].file.name if y[0].file.name is not None else y[0].text
+            info = str(current) + "of" + str(totalsize) + "\n\rMESSAGE_ID: " + str(msgId) + "\n\r" + filename
             print(info)
 
             with DownloadProgressBar(unit='B', unit_scale=True) as t:
