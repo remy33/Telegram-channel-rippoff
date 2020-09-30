@@ -1,0 +1,4 @@
+Telegram.txt
+*.session
+*.session-journal
+/config.ini
