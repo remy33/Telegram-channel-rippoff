@@ -55,10 +55,8 @@ try:
         # Fetching messages to know what will we download before we actually start to avoid timeout during the download
         for msg in tqdm(messages):
             if msg.media is not None:
-                try:
-                    toDownload.append(msg.id)
-                except KeyboardInterrupt:
-                    raise
+                toDownload.append(msg.id)
+
 
         print(toDownload)
         print()
@@ -71,11 +69,9 @@ try:
             current += 1
 
             # Fetching the message again because if we use the first one we would get timeout after few hours.
-            y = client.get_messages(config['DEFAULT']['group_name'], limit=1, offset_id=msgId)
+            # offset_id is the maximum message ID, thus we need to add 1 a message to get the requested message. 
+            y = client.get_messages(config['DEFAULT']['group_name'], limit=1, offset_id=msgId+1)
             
-            # If there is no file we shouldn't continue
-            if not y[0].file:
-                continue
             # Photo might not have filename
             filename = y[0].file.name if y[0].file.name is not None else y[0].text
             info = str(current) + "of" + str(totalsize) + "\n\rMESSAGE_ID: " + str(msgId) + "\n\r" + filename
