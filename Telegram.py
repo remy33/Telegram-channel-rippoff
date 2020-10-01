@@ -14,9 +14,9 @@ if missing:
     subprocess.check_call([sys.executable, '-m', 'pip', 'install',*missing])
 
 from telethon.sync import TelegramClient, events
+from telethon.tl.types import InputMessagesFilterDocument
 from tqdm import tqdm
 import  requests
-
 
 def sendWebhook(dictParams):
     if config['DEFAULT']['webhook_path']:
@@ -50,11 +50,12 @@ try:
         messages = client.get_messages(config['DEFAULT']['group_name'],
                                         offset_id=int(config['DEFAULT']['offset_id']),
                                         min_id=int(config['DEFAULT']['min_id']),
-                                        limit=999999,)
+                                        limit=99999999,
+                                        filter=InputMessagesFilterDocument)
         toDownload = []
         # Fetching messages to know what will we download before we actually start to avoid timeout during the download
         for msg in tqdm(messages):
-            if msg.media is not None:
+            if msg.file is not None:
                 toDownload.append(msg.id)
 
 
