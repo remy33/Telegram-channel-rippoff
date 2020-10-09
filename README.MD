@@ -5,6 +5,8 @@ This script ripping telegram channel's files into a local folder.
 
 You need to change the example.ini so it would match to your preference.
 
+[To learn how to get channel's ID](https://stackoverflow.com/a/50984134/3852918)
+
 If you want to upload it to cloud service, use Rclone mounth.
 
 Direct the destination folder into rglone mount

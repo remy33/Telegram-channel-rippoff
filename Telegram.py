@@ -45,12 +45,18 @@ if not config.read(os.path.join(os.path.dirname(__file__), configName)):
 
 api_id = int(config['DEFAULT']['api_id'])
 api_hash = config['DEFAULT']['api_hash']
+
 try:
     with TelegramClient('session_name', api_id, api_hash) as client:
-        messages = client.get_messages(config['DEFAULT']['group_name'],
+        # Hidden channels are integer only
+        if config['DEFAULT']['group_name'].startswith("-"):
+            channel = client.get_input_entity(int(config['DEFAULT']['group_name']))
+        else:
+             channel = client.get_input_entity(config['DEFAULT']['group_name'])
+        messages = client.get_messages(channel,
                                         offset_id=int(config['DEFAULT']['offset_id']),
                                         min_id=int(config['DEFAULT']['min_id']),
-                                        limit=99999999,
+                                        limit=None,
                                         filter=InputMessagesFilterDocument)
         toDownload = []
         # Fetching messages to know what will we download before we actually start to avoid timeout during the download
@@ -71,7 +77,7 @@ try:
 
             # Fetching the message again because if we use the first one we would get timeout after few hours.
             # offset_id is the maximum message ID, thus we need to add 1 a message to get the requested message. 
-            y = client.get_messages(config['DEFAULT']['group_name'], limit=1, offset_id=msgId+1)
+            y = client.get_messages(channel, limit=1, offset_id=msgId+1)
             
             # Photo might not have filename
             filename = y[0].file.name if y[0].file.name is not None else y[0].text
